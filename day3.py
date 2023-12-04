@@ -31,7 +31,8 @@ def get_part_and_coords_at_coord(data, x, y):
 
     part_coords.append((x, y))
 
-    for i in range(x+1, len(data[y])-1):
+    # bug was here! range is exclusive for top number. We don't want to minus one off!
+    for i in range(x+1, len(data[y])):
         # if no longer a number, must be end of part number
         if data[y][i] not in numbers:
             break
@@ -76,6 +77,7 @@ def get_parts_adjacent_to_coord(data, symbol_coord):
         try:
             int(data[y][x])
             part_number, part_coords = get_part_and_coords_at_coord(data, x, y)
+            print("Adding", part_number)
             found_part_details.append({
                 "number": part_number,
                 "coords": part_coords
@@ -96,16 +98,16 @@ def deduplicate_parts_details(parts_details):
         coords = detail["coords"]
 
 
-        # not a dupe if part number not in list and its coords also are not
-        if number not in part_numbers and coords[0] not in part_coords:
+        # not a dupe if coords are not in list of already processed parts
+        if coords[0] not in part_coords:
             part_numbers.append(number)
-            for coord in part_coords:
+            for coord in coords:
                 part_coords.append(coord)
 
     return part_numbers
 
 
-with open("inputs/day3-example.txt") as f:
+with open("inputs/day3.txt") as f:
     data = f.read().split("\n")
     for i, row in enumerate(data):
         data[i] = [*row]
@@ -121,11 +123,10 @@ with open("inputs/day3-example.txt") as f:
     for coord in symbol_coords:
         adjacent_parts_details += get_parts_adjacent_to_coord(data, coord)
 
-    print(adjacent_parts_details)
-
 
     deduplicated_part_numbers = deduplicate_parts_details(adjacent_parts_details)
 
+    print(deduplicated_part_numbers)
 
     total = 0
     for number in deduplicated_part_numbers:
