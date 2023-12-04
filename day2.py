@@ -37,6 +37,24 @@ def is_hand_possible(bag_contents, hand) -> bool:
     return True
 
 
+def get_power_of_game(bag_contents, hands) -> int:
+    minimums = {}
+
+    for hand in hands:
+        for colour, number in hand.items():
+            # no current minimum set, this is the new minimum
+            if colour not in minimums:
+                minimums[colour] = number
+            # number is higher than minimum - new minimum required
+            elif minimums[colour] < number:
+                minimums[colour] = number
+
+
+    power = 1
+    for _, minimum in minimums.items():
+        power *= minimum
+    
+    return power
 
 
 with open("./inputs/day2.txt", "r") as f:
@@ -55,7 +73,7 @@ bag_contents = {
 
 possible_games = []
 impossible_games = []
-
+power_game_minimums = []
 
 for game_index, hands in enumerate(games):
     game_possible = True
@@ -68,6 +86,8 @@ for game_index, hands in enumerate(games):
     else:
         impossible_games.append(game_index+1)
 
+    power_game_minimums.append(get_power_of_game(bag_contents, hands))
+
 print(possible_games)
 print(impossible_games)
 
@@ -75,4 +95,12 @@ total = 0
 for num in possible_games:
     total+= num
 
-print(total)
+print("Total sum of possible games", total)
+
+
+
+total_power = 0
+for num in power_game_minimums:
+    total_power+= num
+
+print("Total sum of powers", total_power)
