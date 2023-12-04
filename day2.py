@@ -56,6 +56,7 @@ bag_contents = {
 possible_games = []
 impossible_games = []
 
+
 for game_index, hands in enumerate(games):
     game_possible = True
     for hand in hands:
