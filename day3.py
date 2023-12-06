@@ -119,17 +119,35 @@ with open("inputs/day3.txt") as f:
     print("Symbol coords", symbol_coords)
 
 
-    adjacent_parts_details = []
+    all_adjacent_parts_details = []
+    products_of_adjacent_gear_details = []
     for coord in symbol_coords:
-        adjacent_parts_details += get_parts_adjacent_to_coord(data, coord)
+        adjacent_parts_details = get_parts_adjacent_to_coord(data, coord)
+        all_adjacent_parts_details += adjacent_parts_details
+
+        deduplicated_parts_details = deduplicate_parts_details(adjacent_parts_details)
+
+        if data[coord[1]][coord[0]] == "*" and len(deduplicated_parts_details) == 2:
+            print("Gear!", deduplicated_parts_details)
+            product = int(deduplicated_parts_details[0]) * int(deduplicated_parts_details[1])
+            products_of_adjacent_gear_details.append(product)
 
 
-    deduplicated_part_numbers = deduplicate_parts_details(adjacent_parts_details)
 
-    print(deduplicated_part_numbers)
+    deduplicated_part_numbers = deduplicate_parts_details(all_adjacent_parts_details)
+
+    # print(deduplicated_part_numbers)
 
     total = 0
     for number in deduplicated_part_numbers:
         total += int(number)
 
+
+    gear_product_total = 0
+    print(products_of_adjacent_gear_details, len(products_of_adjacent_gear_details))
+    for number in products_of_adjacent_gear_details:
+        # print("gear_product_total", gear_product_total)
+        gear_product_total += int(number)
+
     print("Total", total)
+    print("Gear total", gear_product_total)
