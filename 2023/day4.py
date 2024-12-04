@@ -23,7 +23,7 @@ def get_winning_numbers(winning_numbers, possible_wins):
 
 def calculate_points(wins):
     if len(wins) > 0:
-        return math.pow(2, len(wins) - 1)
+        return int(math.pow(2, len(wins) - 1))
     else:
         return 0
 
@@ -36,7 +36,9 @@ with open("inputs/day4.txt", "r") as f:
 
     points = 0
 
-    for card in cards:
+    multiplier = [1 for x in range(0, len(cards))]
+
+    for index, card in enumerate(cards):
         raw_winning_numbers = card.split("|")[0]
         raw_winning_numbers = raw_winning_numbers.split(":")[1]
         raw_winning_numbers = raw_winning_numbers.split(" ")
@@ -51,8 +53,19 @@ with open("inputs/day4.txt", "r") as f:
         print(possible_wins)
 
         wins = get_winning_numbers(winning_numbers, possible_wins)
+        points_from_card = calculate_points(wins)
+        if points_from_card > 0:
+            print(points_from_card)
+            for i in range(1, points_from_card + 1):
+                multiplier[i] += multiplier[index]
 
 
-        points += calculate_points(wins)
+        points += points_from_card * multiplier[i]
 
 print("Points won", points)
+
+number_cards = 0
+for copies in multiplier:
+    number_cards += copies
+
+print("Number cards", number_cards)
