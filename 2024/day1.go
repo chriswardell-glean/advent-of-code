@@ -56,4 +56,19 @@ func main() {
 
 	fmt.Println("Difference total:", total)
 
+	similarityScore := 0
+	for i := range leftHandList {
+		leftHand := leftHandList[i]
+
+		count := 0
+		for j := range rightHandList {
+			rightHand := rightHandList[j]
+			if leftHand == rightHand {
+				count += 1
+			}
+		}
+		similarityScore += count * leftHand
+
+	}
+	fmt.Println("Similarlity score:", similarityScore)
 }
