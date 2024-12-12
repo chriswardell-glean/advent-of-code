@@ -11,6 +11,32 @@ var grid [][]string
 var gridWidth int
 var gridHeight int
 
+func getMasCoordinates(startX int, startY int) (wordCoordinates [][][]int) {
+	// Gets diagonals in one direction (i.e. not the same coordinates in reverse)
+	startOffsets := [][]int{{-1, -1}, {-1, 1}}
+	for _, offset := range startOffsets {
+		var coordinates [][]int
+
+		for i := 1; i > -2; i-- {
+			xCoord := startX + (offset[0] * i)
+			yCoord := startY + (offset[1] * i)
+
+			if xCoord < 0 || xCoord >= gridWidth {
+				break
+			}
+			if yCoord < 0 || yCoord >= gridHeight {
+				break
+			}
+			coordinates = append(coordinates, []int{xCoord, yCoord})
+		}
+		if len(coordinates) == 3 {
+			wordCoordinates = append(wordCoordinates, coordinates)
+		}
+	}
+	return wordCoordinates
+
+}
+
 func getRadialCoordinates(startX int, startY int, radius int) (wordCoordinates [][][]int) {
 	// Return value stores list of set of x,y coordinates of the full word
 	// E.g. two words of length 2: [[[0, 1], [0,2]], [[5, 1], [5,2]]]
@@ -78,6 +104,27 @@ func dayFour() {
 	}
 
 	fmt.Println("Count:", xmasCount)
+
+	xmasCount = 0
+
+	for y := 0; y < gridHeight; y++ {
+		for x := 0; x < gridWidth; x++ {
+			masCount := 0
+			possibleMasCoordinates := getMasCoordinates(x, y)
+			for _, wordCoordinates := range possibleMasCoordinates {
+				word := getWordWithCoordinates(wordCoordinates)
+				if word == "MAS" || word == "SAM" {
+					masCount++
+				}
+			}
+			if masCount == 2 {
+				xmasCount++
+				continue
+			}
+		}
+	}
+
+	fmt.Println("Actual Xmas count:", xmasCount)
 
 }
 
