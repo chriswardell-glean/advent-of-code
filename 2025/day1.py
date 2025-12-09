@@ -33,10 +33,30 @@ position = 50
 count = 0
 
 for instruction in instructions:
-    position += instruction
-    position = position % 100
+    clicks = 0
+    old_position = position
+    remainder = abs(instruction) % 100
+    full_turns = int((abs(instruction) - remainder) / 100)
+    extra_click = 0
 
-    if position == 0:
-        count += 1
+    multiplier = -1 if instruction < 0 else 1
+
+    remaining_turn_instruction = remainder * multiplier
+
+    position += remaining_turn_instruction
+
+    # -99 <= remaining_turn_instruction <= 99
+    # skip if nothing to move
+    # skip if starting at zero, impossible to go past or land on zero
+    # only add click if go past zero
+    if remaining_turn_instruction != 0 and old_position != 0 and (position <= 0 or position > 99):
+        extra_click = 1
+
+    # sanitise for next run to be between 0 and 99
+    position = position % 100
+    clicks += full_turns + extra_click
+
+    print(instruction, old_position, position, full_turns, extra_click)
+    count += clicks
 
 print(count)
