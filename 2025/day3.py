@@ -12,15 +12,26 @@ with open(f"{dir_path}/inputs/day3.txt", "r") as f:
 
 total_joltage = 0
 
+number_of_batteries = 12
+
 for bank in banks:
     batteries = list(bank)
-    # first number can't be the last number, must be two batteries!
-    highest_first_number = max(batteries[:-1])
-    # leftmost index of the highest first number means we can have more available second numbers to get a higher number with
-    index_of_first_number = batteries.index(highest_first_number)
+    batteries_enabled = ""
 
-    highest_second_number = max(batteries[index_of_first_number + 1 :])
+    start_index = 0
 
-    total_joltage += int(highest_first_number + highest_second_number)
+    for iteration in range(0, number_of_batteries):
+        end_index_count = number_of_batteries - iteration - 1
+        # if 0, then we can go to end of list
+        end_index = None if end_index_count == 0 else end_index_count * -1
+
+        sub_bank = batteries[start_index:end_index]
+        print(bank, iteration, start_index, sub_bank)
+        highest_first_number = max(sub_bank)
+        start_index = start_index + sub_bank.index(highest_first_number) + 1
+
+        batteries_enabled += highest_first_number
+        print(highest_first_number, start_index)
+    total_joltage += int(batteries_enabled)
 
 print(total_joltage)
